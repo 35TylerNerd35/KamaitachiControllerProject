@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8f6f3babc6acd45aff506b9d5dbaca, type: 3}
+  m_Name: CHUNITHM
+  m_EditorClassIdentifier: 
+  doesUseScore: 1
+  meta:
+    game: chunithm
+    playtype: Single
+    service: CHUNITHM
+  lamps:
+  - FAILED
+  - CLEAR
+  - FULL COMBO
+  - ALL JUSTICE
+  - ALL JUSTICE CRITICAL
+  difficulties:
+  - BASIC
+  - ADVANCED
+  - EXPERT
+  - MASTER
+  - ULTIMA
