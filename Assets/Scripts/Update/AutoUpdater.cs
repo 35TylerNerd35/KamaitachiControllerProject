@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 using System.IO;
-using System.IO.Compression;
+using UnityEngine.UI;
+using TMPro;
 
 [System.Serializable]
 public class UpdateInfo
@@ -15,12 +16,44 @@ public class AutoUpdater : MonoBehaviour
 {
     public string updateInfoURL = "https://raw.githubusercontent.com/35TylerNerd35/KamaitachiController/main/update.json";
     private string downloadedInstallerPath;
-    public GameObject updatePrompt;
+    [SerializeField] GameObject updatePrompt, doesHidePromptButton;
+
+    Color green = new Color(0.09803922f, 0.5294118f, 0.3294118f);
+    Color red = new Color(0.509804f, 0.1921569f, 0.2705882f);
 
     UpdateInfo info;
 
     void Start()
     {
+        SaveSystem.instance.OnLoad.AddListener(SetHideUpdateSwitch);
+
+        if (SaveSystem.instance.saveData.doesHideUpdatePrompt)
+            return;
+
+        StartCoroutine(WaitForLoad());
+    }
+
+    IEnumerator WaitForLoad() {
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CheckForUpdates());
+    }
+
+    public void SwitchDoesHideUpdatePrompt()
+    {
+        // Invert bool
+        bool doesHide = !SaveSystem.instance.saveData.doesHideUpdatePrompt;
+        SaveSystem.instance.saveData.doesHideUpdatePrompt = doesHide;
+
+        SetHideUpdateSwitch();
+        SaveSystem.instance.SaveData();
+    }
+
+    public void SetHideUpdateSwitch() {
+        doesHidePromptButton.GetComponent<Image>().color = SaveSystem.instance.saveData.doesHideUpdatePrompt ? red : green;
+        doesHidePromptButton.transform.GetChild(0).GetComponent<TMP_Text>().text = SaveSystem.instance.saveData.doesHideUpdatePrompt ? "Not Checking For Updates" : "Checking For Updates";
+    }
+
+    public void CheckUpdates() {
         StartCoroutine(CheckForUpdates());
     }
 
@@ -37,10 +70,11 @@ public class AutoUpdater : MonoBehaviour
             string currentVersion = Application.version;
 
             // Alert player to available update
-            if (currentVersion != info.version)
-            {
-                updatePrompt.SetActive(true);
-            }
+            if (currentVersion == info.version)
+                yield break;
+
+            // Alert player to available update
+            updatePrompt.SetActive(true);
         }
         else
         {

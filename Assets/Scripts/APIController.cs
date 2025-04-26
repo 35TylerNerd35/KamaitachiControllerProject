@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class APIController : MonoBehaviour
 {
     string APIKey;
+    string sApiKey;
 
     int currentGameSelection;
 
@@ -17,19 +18,29 @@ public class APIController : MonoBehaviour
     [Header("Profile")]
     [SerializeField] TMP_InputField apiInput;
     [SerializeField] TMP_Text userText, bioText, profileButtonText;
+    [Space]
+    [SerializeField] TMP_InputField googleSheetsInput;
 
     [Header("Game Fields")]
     [SerializeField] GameObject warningText;
 
-    void Awake()
+    void Start()
     {
         OnGameSelectionChange(0);
+        SaveSystem.instance.OnLoad.AddListener(OnLoad);
+    }
+
+    public void OnLoad() {
+        apiInput.text = SaveSystem.instance.saveData.kamaitachiApiKey;
+        googleSheetsInput.text = SaveSystem.instance.saveData.googleSheetsApiKey;
+        GrabUser();
     }
 
     public async void GrabUser() {
 
         // Grab input API key
         APIKey = apiInput.text;
+        sApiKey = googleSheetsInput.text;
 
         // Send request
         APIBridge.instance.SetNewKClientAuth(APIKey);
@@ -39,6 +50,12 @@ public class APIController : MonoBehaviour
         userText.text = jsonObj.body.username + "'s Profile";
         profileButtonText.text = "What's up, " + jsonObj.body.username;
         bioText.text = jsonObj.body.about;
+
+        // Save values
+        SaveSystem.instance.saveData.kamaitachiApiKey = APIKey;
+        SaveSystem.instance.saveData.googleSheetsApiKey = sApiKey;
+        SaveSystem.instance.SaveData();
+
     }
 
     public async void SendRequest()
