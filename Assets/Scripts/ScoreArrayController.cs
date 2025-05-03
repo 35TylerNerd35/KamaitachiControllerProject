@@ -15,6 +15,7 @@ public class ScoreArrayController : MonoBehaviour
     [SerializeField] TMP_InputField scoreInput;
     [Space][Space]
     [SerializeField] GameObject unsavedText;
+    [SerializeField] GameObject scoreUnselectedBlocker;
 
     
     ScoreItemHandle currentSelection;
@@ -32,12 +33,6 @@ public class ScoreArrayController : MonoBehaviour
         GameObject newItem = Instantiate(arrayItemPrefab, arrayParent);
         arrayItems.Add(newItem);
 
-        // Set position
-        Vector3 tempPos = newItem.transform.localPosition;
-        float offset = -35 * (arrayItems.Count - 1);
-        tempPos.y += offset;
-        newItem.transform.localPosition = tempPos;
-
         // Grab Handle from object
         ScoreItemHandle itemHandle = newItem.GetComponent<ScoreItemHandle>();
 
@@ -46,26 +41,43 @@ public class ScoreArrayController : MonoBehaviour
         itemHandle.lampDropdown = lampDropdown;
         itemHandle.songNameInput = songNameInput;
         itemHandle.scoreInput = scoreInput;
-
         itemHandle.unsavedText = unsavedText;
         
+        // Update item
         itemHandle.scoreArrayController = this;
         itemHandle.UpdateItem(arrayItems.Count);
+        itemHandle.DisplayItem();
+        scoreUnselectedBlocker.SetActive(false);
     }
 
     public void RemoveScore()
     {
+        ErrorController.instance.ShowConfirmation($"You Wish To Remove Score #{arrayItems.IndexOf(currentSelection.gameObject) + 1}?");
+        ErrorController.instance.OnConfirmYes.AddListener(ActualRemoveScore);
+    }
+
+    public void ActualRemoveScore()
+    {
         // Error if no score to remove
-        if (arrayItems.Count <= 0)
+        if (currentSelection == null)
         {
-            ErrorController.instance.ShowError("400 Bad Request", "You have no scores to remove.");
+            ErrorController.instance.ShowError("400 Bad Request", "Please Select a Score to Remove it");
             return;
         }
 
-        // Remove last item
-        int lastItem = arrayItems.Count - 1;
-        Destroy(arrayItems[lastItem]);
-        arrayItems.RemoveAt(lastItem);
+        // Remove element from array and destroy it
+        int i_currentSelection = arrayItems.IndexOf(currentSelection.gameObject);
+        arrayItems.RemoveAt(i_currentSelection);
+        Destroy(currentSelection.gameObject);
+
+        // Reposition and rename every element
+        foreach(GameObject item in arrayItems)
+        {
+            ScoreItemHandle itemHandle = item.GetComponent<ScoreItemHandle>();
+            itemHandle.UpdateItem(arrayItems.IndexOf(item)+1);
+        }
+    
+        scoreUnselectedBlocker.SetActive(true);
     }
 
     public void RemoveAllScores()
@@ -79,6 +91,7 @@ public class ScoreArrayController : MonoBehaviour
 
         arrayItems.Clear();
         unsavedText.SetActive(false);
+        scoreUnselectedBlocker.SetActive(true);
     }
 
     public void SelectItem(ScoreItemHandle current)
@@ -91,6 +104,7 @@ public class ScoreArrayController : MonoBehaviour
         unsavedText.SetActive(false);
         currentSelection = current;
         currentSelection.activeIndicator.SetActive(true);
+        scoreUnselectedBlocker.SetActive(false);
     }
 
     public void SaveItem()

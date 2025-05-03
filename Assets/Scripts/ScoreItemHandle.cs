@@ -29,8 +29,14 @@ public class ScoreItemHandle : MonoBehaviour
         string sCount = count < 10 ? "0" + count : count.ToString();
         itemLabel.text = $"Score {sCount}";
 
+        // Position element
+        Vector3 tempPos = new(0, -40, 0);
+        float offset = -35 * (count-1);
+        tempPos.y += offset;
+        transform.localPosition = tempPos;
+
         // Set as current focussed
-        DisplayItem();
+        // DisplayItem();
     }
 
     public void SaveItem()
