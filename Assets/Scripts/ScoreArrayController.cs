@@ -12,7 +12,7 @@ public class ScoreArrayController : MonoBehaviour
     [SerializeField] TMP_Dropdown difficultyDropdown;
     [SerializeField] TMP_Dropdown lampDropdown;
     [SerializeField] TMP_InputField songNameInput;
-    [SerializeField] TMP_InputField scoreInput;
+    [SerializeField] TMP_InputField scoreInput, hourInput, dateInput, monthInput, yearInput;
     [Space][Space]
     [SerializeField] GameObject unsavedText;
     [SerializeField] GameObject scoreUnselectedBlocker;
@@ -42,6 +42,12 @@ public class ScoreArrayController : MonoBehaviour
         itemHandle.songNameInput = songNameInput;
         itemHandle.scoreInput = scoreInput;
         itemHandle.unsavedText = unsavedText;
+
+        // Set date vars
+        itemHandle.hourInput = hourInput;
+        itemHandle.dateInput = dateInput;
+        itemHandle.monthInput = monthInput;
+        itemHandle.yearInput = yearInput;
         
         // Update item
         itemHandle.scoreArrayController = this;

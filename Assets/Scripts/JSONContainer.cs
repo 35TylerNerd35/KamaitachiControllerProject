@@ -27,7 +27,7 @@ public class Payload
 
     public string difficulty;
 
-    public ulong timeAchieved;
+    public long timeAchieved;
 }
 
 

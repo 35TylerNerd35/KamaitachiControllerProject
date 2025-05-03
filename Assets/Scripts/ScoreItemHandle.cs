@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System;
 
 public class ScoreItemHandle : MonoBehaviour
 {
@@ -15,13 +16,14 @@ public class ScoreItemHandle : MonoBehaviour
 
     public ScoreArrayController scoreArrayController;
     public TMP_Dropdown difficultyDropdown, lampDropdown;
-    public TMP_InputField songNameInput, scoreInput;
+    public TMP_InputField songNameInput, scoreInput, hourInput, dateInput, monthInput, yearInput;
     public GameObject unsavedText;
 
     // Saved vars
     int _difficulty, _lamp;
     float _scoreInputFloat;
     string _songName;
+    int _hourInput = DateTime.Now.Hour, _dateInput = DateTime.Now.Day, _monthInput = DateTime.Now.Month, _yearInput = DateTime.Now.Year;
 
     public void UpdateItem(int count)
     {
@@ -34,9 +36,6 @@ public class ScoreItemHandle : MonoBehaviour
         float offset = -35 * (count-1);
         tempPos.y += offset;
         transform.localPosition = tempPos;
-
-        // Set as current focussed
-        // DisplayItem();
     }
 
     public void SaveItem()
@@ -46,6 +45,16 @@ public class ScoreItemHandle : MonoBehaviour
 
         if (!didParse) {
             ErrorController.instance.ShowError("400 Bad Request", "Unable to parse score input.");
+            return;
+        }
+
+        if (!CouldParseDate()){
+            ErrorController.instance.ShowError("400 Bad Request", "Unable to parse date input.");
+            return;
+        }
+
+        if (!CouldConvertToUnix(out long unixTime, out string error)){
+            ErrorController.instance.ShowError("400 Bad Request", "Unable to convert date input to UNIX.");
             return;
         }
 
@@ -62,7 +71,7 @@ public class ScoreItemHandle : MonoBehaviour
             matchType = "songTitle",
             identifier = _songName,
             difficulty = difficultyDropdown.options[_difficulty].text,
-            timeAchieved = 1624324467489
+            timeAchieved = unixTime
         };
 
         sPayload = new ScorePayload {
@@ -71,11 +80,54 @@ public class ScoreItemHandle : MonoBehaviour
             matchType = "songTitle",
             identifier = _songName,
             difficulty = difficultyDropdown.options[_difficulty].text,
-            timeAchieved = 1624324467489
+            timeAchieved = unixTime
         };
 
         unsavedText.SetActive(false);
     }
+
+    bool CouldParseDate()
+    {
+        // Parse all inputs
+        bool _hour = int.TryParse(hourInput.text, out int hour);
+        bool _date = int.TryParse(dateInput.text, out int date);
+        bool _month = int.TryParse(monthInput.text, out int month);
+        bool _year = int.TryParse(yearInput.text, out int year);
+
+        if (!_hour || !_date || !_month || !_year)
+            return false;
+
+        // Save vars
+        _hourInput = hour;
+        _dateInput = date;
+        _monthInput = month;
+        _yearInput = year;
+
+        return true;
+    }
+
+    bool CouldConvertToUnix(out long unixTime, out string error)
+    {
+        // Declare out vars
+        unixTime = 0;
+        error = "";
+
+        try
+        {
+            // Convert to DateTime
+            DateTimeOffset dt = new DateTimeOffset(_yearInput, _monthInput, _dateInput, _hourInput, 0, 0, TimeSpan.Zero);
+            dt.ToUniversalTime();
+            unixTime = dt.ToUnixTimeMilliseconds();
+        }
+        catch (Exception e)
+        {
+            error = e.ToString();
+            return false;
+        }
+
+        return true;
+    }
+
 
     public void DisplayItem()
     {
@@ -86,6 +138,10 @@ public class ScoreItemHandle : MonoBehaviour
         lampDropdown.value = _lamp;
         songNameInput.text = _songName;
         scoreInput.text = _scoreInputFloat.ToString();
+        hourInput.text = _hourInput.ToString();
+        dateInput.text = _dateInput.ToString();
+        monthInput.text = _monthInput.ToString();
+        yearInput.text = _yearInput.ToString();
 
         SaveItem();
     }

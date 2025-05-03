@@ -133,7 +133,7 @@ public class AutoUpdater : MonoBehaviour
         string batchContents = "@echo off\n" +
             "timeout /t 1 /nobreak\n" +
             $"powershell -Command \"Expand-Archive -Path '{downloadedInstallerPath}' -DestinationPath '{Application.dataPath}/..' -Force\"\n" +
-            "start \"\" \"KamatachiController.exe\"\n" +
+            "start \"\" \"KamaitachiController.exe\"\n" +
             "exit";
 
         // Write batch file

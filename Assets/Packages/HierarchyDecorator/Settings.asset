@@ -4608,5 +4608,44 @@ MonoBehaviour:
         isBuiltIn: 0
         script: {fileID: 11500000, guid: 00146becf97466649905d845ec9b06ab, type: 3}
         hasToggle: 1
+      - displayName: AutoUpdater
+        name: AutoUpdater, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        content:
+          m_Text: AutoUpdater
+          m_Image: {fileID: -8204150473280056172, guid: 0000000000000000d000000000000000,
+            type: 0}
+          m_Tooltip: AutoUpdater
+          m_TextWithWhitespace: "AutoUpdater\u200B"
+        shown: 0
+        excluded: 0
+        isBuiltIn: 0
+        script: {fileID: 11500000, guid: 0471e142f5842a84c80af89be748754d, type: 3}
+        hasToggle: 1
+      - displayName: SaveSystem
+        name: SaveSystem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        content:
+          m_Text: SaveSystem
+          m_Image: {fileID: -8204150473280056172, guid: 0000000000000000d000000000000000,
+            type: 0}
+          m_Tooltip: SaveSystem
+          m_TextWithWhitespace: "SaveSystem\u200B"
+        shown: 0
+        excluded: 0
+        isBuiltIn: 0
+        script: {fileID: 11500000, guid: ac994286e743aa24583dd19c0613ebec, type: 3}
+        hasToggle: 1
+      - displayName: InitialSetup
+        name: InitialSetup, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        content:
+          m_Text: InitialSetup
+          m_Image: {fileID: -8204150473280056172, guid: 0000000000000000d000000000000000,
+            type: 0}
+          m_Tooltip: InitialSetup
+          m_TextWithWhitespace: "InitialSetup\u200B"
+        shown: 0
+        excluded: 0
+        isBuiltIn: 0
+        script: {fileID: 11500000, guid: 5fff0ffb683fc1741b2c511fd4e45a9a, type: 3}
+        hasToggle: 1
     unityVersion: 6000.0.0b12
     unityCount: 304
