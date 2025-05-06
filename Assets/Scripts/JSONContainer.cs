@@ -27,6 +27,8 @@ public class Payload
 
     public string difficulty;
 
+    public Record judgements;
+
     public long timeAchieved;
 }
 
@@ -42,4 +44,13 @@ public class ScorePayload : Payload
 public class PercentPayload : Payload
 {
     public float percent;
+}
+
+
+[System.Serializable]
+public class Record {
+    public int perfect;
+    public int great;
+    public int good;
+    public int miss;
 }

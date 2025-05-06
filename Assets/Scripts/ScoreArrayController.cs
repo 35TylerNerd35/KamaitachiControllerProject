@@ -16,6 +16,7 @@ public class ScoreArrayController : MonoBehaviour
     [Space][Space]
     [SerializeField] GameObject unsavedText;
     [SerializeField] GameObject scoreUnselectedBlocker;
+    [SerializeField] TMP_InputField perfects, greats, goods, misses;
 
     
     ScoreItemHandle currentSelection;
@@ -48,6 +49,12 @@ public class ScoreArrayController : MonoBehaviour
         itemHandle.dateInput = dateInput;
         itemHandle.monthInput = monthInput;
         itemHandle.yearInput = yearInput;
+
+        // Set judgement vars
+        itemHandle.perfects = perfects;
+        itemHandle.greats = greats;
+        itemHandle.goods = goods;
+        itemHandle.misses = misses;
         
         // Update item
         itemHandle.scoreArrayController = this;

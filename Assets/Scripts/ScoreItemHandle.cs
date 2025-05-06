@@ -18,12 +18,14 @@ public class ScoreItemHandle : MonoBehaviour
     public TMP_Dropdown difficultyDropdown, lampDropdown;
     public TMP_InputField songNameInput, scoreInput, hourInput, dateInput, monthInput, yearInput;
     public GameObject unsavedText;
+    public TMP_InputField perfects, greats, goods, misses;
 
     // Saved vars
     int _difficulty, _lamp;
     float _scoreInputFloat;
     string _songName;
     int _hourInput = DateTime.Now.Hour, _dateInput = DateTime.Now.Day, _monthInput = DateTime.Now.Month, _yearInput = DateTime.Now.Year;
+    int _perfects, _greats, _goods, _misses;
 
     public void UpdateItem(int count)
     {
@@ -58,11 +60,24 @@ public class ScoreItemHandle : MonoBehaviour
             return;
         }
 
+        if (!CouldParseJudgements()){
+            ErrorController.instance.ShowError("400 Bad Request", "Unable to parse judgement input.");
+            return;
+        }
+
         // Save vars
         _difficulty = difficultyDropdown.value;
         _lamp = lampDropdown.value;
         _scoreInputFloat = scoreInputInt;
         _songName = songNameInput.text;
+
+        // Grab judgements
+        Record judgements = new Record {
+            perfect = _perfects,
+            great = _greats,
+            good = _goods,
+            miss = _misses
+        };
 
         // Set payloads
         pPayload = new PercentPayload {
@@ -71,6 +86,7 @@ public class ScoreItemHandle : MonoBehaviour
             matchType = "songTitle",
             identifier = _songName,
             difficulty = difficultyDropdown.options[_difficulty].text,
+            judgements = judgements,
             timeAchieved = unixTime
         };
 
@@ -80,6 +96,7 @@ public class ScoreItemHandle : MonoBehaviour
             matchType = "songTitle",
             identifier = _songName,
             difficulty = difficultyDropdown.options[_difficulty].text,
+            judgements = judgements,
             timeAchieved = unixTime
         };
 
@@ -102,6 +119,24 @@ public class ScoreItemHandle : MonoBehaviour
         _dateInput = date;
         _monthInput = month;
         _yearInput = year;
+
+        return true;
+    }
+
+    bool CouldParseJudgements()
+    {
+        bool _perfect = int.TryParse(perfects.text, out int perfect);
+        bool _great = int.TryParse(greats.text, out int great);
+        bool _good = int.TryParse(goods.text, out int good);
+        bool _miss = int.TryParse(misses.text, out int miss);
+
+        if (!_perfect || !_great || !_good || !_miss)
+            return false;
+
+        _perfects = perfect;
+        _greats = great;
+        _goods = good;
+        _misses = miss;
 
         return true;
     }
@@ -142,6 +177,11 @@ public class ScoreItemHandle : MonoBehaviour
         dateInput.text = _dateInput.ToString();
         monthInput.text = _monthInput.ToString();
         yearInput.text = _yearInput.ToString();
+        perfects.text = _perfects.ToString();
+        greats.text = _greats.ToString();
+        goods.text = _goods.ToString();
+        misses.text = _misses.ToString();
+
 
         SaveItem();
     }
