@@ -13,7 +13,11 @@ public class ErrorController : MonoBehaviour
     [Header("Confirmations")]
     [SerializeField] GameObject confirmationPopupGraphic;
     [SerializeField] TMP_Text confirmationPopupDescription;
-    public UnityEvent OnConfirmYes, OnConfirmNo;
+    [HideInInspector] public UnityEvent OnConfirmYes, OnConfirmNo;
+
+    [Header("Information")]
+    [SerializeField] GameObject infoPopupGraphic;
+    [SerializeField] TMP_Text infoPopupDescription;
 
     void Awake()
     {
@@ -68,11 +72,13 @@ public class ErrorController : MonoBehaviour
         OnConfirmNo.RemoveAllListeners();
     }
 
-    public void SubscribeQuitToConfirmation() {
-        OnConfirmYes.AddListener(QuitGame);
+    public void ShowInfo(string description)
+    {
+        infoPopupDescription.text = description;
+        infoPopupGraphic.SetActive(true);
     }
 
-    void QuitGame() {
+    public void QuitGame() {
         Application.Quit();
     }
 }

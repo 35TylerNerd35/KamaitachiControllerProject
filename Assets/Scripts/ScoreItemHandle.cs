@@ -28,6 +28,7 @@ public class ScoreItemHandle : MonoBehaviour
     string _timeInput = DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00");
     string _dateInput = DateTime.Now.Day.ToString("00") + "/" + DateTime.Now.Month.ToString("00") + "/" + DateTime.Now.Year.ToString("0000");
     int _perfects, _greats, _goods, _misses;
+    
 
     public void UpdateItem(int count)
     {
@@ -35,11 +36,19 @@ public class ScoreItemHandle : MonoBehaviour
         string sCount = count < 10 ? "0" + count : count.ToString();
         itemLabel.text = $"Score {sCount}";
 
+        if( !string.IsNullOrEmpty(_songName))
+            itemLabel.text = _songName;
+
         // Position element
         Vector3 tempPos = new(0, -40, 0);
         float offset = -35 * (count-1);
         tempPos.y += offset;
         transform.localPosition = tempPos;
+
+        if(GetComponent<PromptContainer>())
+        {
+            GetComponent<PromptContainer>().activeObj = unsavedText;
+        }
     }
 
     public void SaveItem()
@@ -98,6 +107,9 @@ public class ScoreItemHandle : MonoBehaviour
         };
 
         unsavedText.SetActive(false);
+
+        if( !string.IsNullOrEmpty(_songName))
+            itemLabel.text = _songName;
     }
 
     bool CouldParseDate(out long unixTime)

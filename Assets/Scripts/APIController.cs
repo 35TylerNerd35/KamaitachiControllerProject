@@ -85,6 +85,16 @@ public class APIController : MonoBehaviour
 
         // Send request
         ImportResponse bridgeResponse = await APIBridge.instance.SendPostRequest<PayloadContainer, ImportResponse>("https://kamai.tachi.ac/ir/direct-manual/import", payload);
+
+        if (!bridgeResponse.success)
+        {
+            ErrorController.instance.ShowError("400 Bad Request", "Scores Not Succesfully Sent.");
+        }
+        else
+        {
+            ErrorController.instance.ShowInfo("Scores Succesfully Sent.");
+            scoreArrayController.RemoveAllScores();
+        }
     }
 
     public void OnGameSelectionChange(int newSelection)

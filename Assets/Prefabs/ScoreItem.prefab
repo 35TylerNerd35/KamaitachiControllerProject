@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 6955311023849593193}
   - component: {fileID: 623793741854604260}
   - component: {fileID: 764770030289171464}
+  - component: {fileID: 5561282314441934499}
   m_Layer: 5
   m_Name: ScoreItem
   m_TagString: Untagged
@@ -177,9 +178,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 764770030289171464}
-        m_TargetAssemblyTypeName: ScoreItemHandle, Assembly-CSharp
-        m_MethodName: DisplayItem
+      - m_Target: {fileID: 5561282314441934499}
+        m_TargetAssemblyTypeName: PromptContainer, Assembly-CSharp
+        m_MethodName: BeginPrompt
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -207,6 +208,11 @@ MonoBehaviour:
     matchType: 
     identifier: 
     difficulty: 
+    judgements:
+      perfect: 0
+      great: 0
+      good: 0
+      miss: 0
     timeAchieved: 0
     percent: 0
   sPayload:
@@ -214,13 +220,74 @@ MonoBehaviour:
     matchType: 
     identifier: 
     difficulty: 
+    judgements:
+      perfect: 0
+      great: 0
+      good: 0
+      miss: 0
     timeAchieved: 0
     score: 0
-  scoreArrayController: {fileID: 0}
   itemLabel: {fileID: 8774296786044004533}
+  activeIndicator: {fileID: 6273665951726234606}
+  scoreArrayController: {fileID: 0}
   difficultyDropdown: {fileID: 0}
   lampDropdown: {fileID: 0}
-  activeIndicator: {fileID: 6273665951726234606}
+  songNameInput: {fileID: 0}
+  scoreInput: {fileID: 0}
+  dateInput: {fileID: 0}
+  timeInput: {fileID: 0}
+  unsavedText: {fileID: 0}
+  perfects: {fileID: 0}
+  greats: {fileID: 0}
+  goods: {fileID: 0}
+  misses: {fileID: 0}
+--- !u!114 &5561282314441934499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5905618131534689710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 031b14a1cb61bcc4b8c404c172d92570, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeObj: {fileID: 0}
+  onConfirm:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 764770030289171464}
+        m_TargetAssemblyTypeName: ScoreItemHandle, Assembly-CSharp
+        m_MethodName: DisplayItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  promptText: Wish to switch when unsaved?
+  Condition:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5561282314441934499}
+        m_TargetAssemblyTypeName: PromptContainer, Assembly-CSharp
+        m_MethodName: ActiveCondition
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1 &6273665951726234606
 GameObject:
   m_ObjectHideFlags: 0
