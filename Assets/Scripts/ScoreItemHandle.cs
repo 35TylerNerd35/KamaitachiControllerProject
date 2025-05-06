@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System;
+using System.Globalization;
 
 public class ScoreItemHandle : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class ScoreItemHandle : MonoBehaviour
 
     public ScoreArrayController scoreArrayController;
     public TMP_Dropdown difficultyDropdown, lampDropdown;
-    public TMP_InputField songNameInput, scoreInput, hourInput, dateInput, monthInput, yearInput;
+    public TMP_InputField songNameInput, scoreInput, dateInput, timeInput;
     public GameObject unsavedText;
     public TMP_InputField perfects, greats, goods, misses;
 
@@ -24,7 +25,8 @@ public class ScoreItemHandle : MonoBehaviour
     int _difficulty, _lamp;
     float _scoreInputFloat;
     string _songName;
-    int _hourInput = DateTime.Now.Hour, _dateInput = DateTime.Now.Day, _monthInput = DateTime.Now.Month, _yearInput = DateTime.Now.Year;
+    string _timeInput = DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00");
+    string _dateInput = DateTime.Now.Day.ToString("00") + "/" + DateTime.Now.Month.ToString("00") + "/" + DateTime.Now.Year.ToString("0000");
     int _perfects, _greats, _goods, _misses;
 
     public void UpdateItem(int count)
@@ -50,13 +52,8 @@ public class ScoreItemHandle : MonoBehaviour
             return;
         }
 
-        if (!CouldParseDate()){
-            ErrorController.instance.ShowError("400 Bad Request", "Unable to parse date input.");
-            return;
-        }
-
-        if (!CouldConvertToUnix(out long unixTime, out string error)){
-            ErrorController.instance.ShowError("400 Bad Request", "Unable to convert date input to UNIX.");
+        if (!CouldParseDate(out long unixTime)){
+            ErrorController.instance.ShowError("400 Bad Request", $"Unable to parse date input: {dateInput.text + "-" + timeInput.text}");
             return;
         }
 
@@ -103,24 +100,36 @@ public class ScoreItemHandle : MonoBehaviour
         unsavedText.SetActive(false);
     }
 
-    bool CouldParseDate()
+    bool CouldParseDate(out long unixTime)
     {
-        // Parse all inputs
-        bool _hour = int.TryParse(hourInput.text, out int hour);
-        bool _date = int.TryParse(dateInput.text, out int date);
-        bool _month = int.TryParse(monthInput.text, out int month);
-        bool _year = int.TryParse(yearInput.text, out int year);
+        // Assign values
+        string dateAndTime = dateInput.text + "-" + timeInput.text;
+        unixTime = 0;
 
-        if (!_hour || !_date || !_month || !_year)
+        // Save dateTime values
+        _timeInput = timeInput.text;
+        _dateInput = dateInput.text;
+
+        try
+        {
+            // Parse string into datetime
+            DateTime dt = DateTime.ParseExact(dateAndTime, "dd/MM/yyyy-HH:mm", CultureInfo.InvariantCulture);
+
+            // Convert to offset
+            dt = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+            DateTimeOffset dto = dt;
+            dto.ToUniversalTime();
+
+            // Convert to Unix
+            unixTime = dto.ToUnixTimeMilliseconds();
+
+            return true;
+        }
+        catch(Exception e)
+        {
+            Debug.LogWarning(e.ToString());
             return false;
-
-        // Save vars
-        _hourInput = hour;
-        _dateInput = date;
-        _monthInput = month;
-        _yearInput = year;
-
-        return true;
+        }
     }
 
     bool CouldParseJudgements()
@@ -141,28 +150,6 @@ public class ScoreItemHandle : MonoBehaviour
         return true;
     }
 
-    bool CouldConvertToUnix(out long unixTime, out string error)
-    {
-        // Declare out vars
-        unixTime = 0;
-        error = "";
-
-        try
-        {
-            // Convert to DateTime
-            DateTimeOffset dt = new DateTimeOffset(_yearInput, _monthInput, _dateInput, _hourInput, 0, 0, TimeSpan.Zero);
-            dt.ToUniversalTime();
-            unixTime = dt.ToUnixTimeMilliseconds();
-        }
-        catch (Exception e)
-        {
-            error = e.ToString();
-            return false;
-        }
-
-        return true;
-    }
-
 
     public void DisplayItem()
     {
@@ -173,10 +160,8 @@ public class ScoreItemHandle : MonoBehaviour
         lampDropdown.value = _lamp;
         songNameInput.text = _songName;
         scoreInput.text = _scoreInputFloat.ToString();
-        hourInput.text = _hourInput.ToString();
+        timeInput.text = _timeInput;
         dateInput.text = _dateInput.ToString();
-        monthInput.text = _monthInput.ToString();
-        yearInput.text = _yearInput.ToString();
         perfects.text = _perfects.ToString();
         greats.text = _greats.ToString();
         goods.text = _goods.ToString();

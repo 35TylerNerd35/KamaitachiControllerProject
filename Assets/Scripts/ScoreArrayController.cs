@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Globalization;
+using System;
 
 public class ScoreArrayController : MonoBehaviour
 {
@@ -12,7 +14,7 @@ public class ScoreArrayController : MonoBehaviour
     [SerializeField] TMP_Dropdown difficultyDropdown;
     [SerializeField] TMP_Dropdown lampDropdown;
     [SerializeField] TMP_InputField songNameInput;
-    [SerializeField] TMP_InputField scoreInput, hourInput, dateInput, monthInput, yearInput;
+    [SerializeField] TMP_InputField scoreInput, dateInput, timeInput;
     [Space][Space]
     [SerializeField] GameObject unsavedText;
     [SerializeField] GameObject scoreUnselectedBlocker;
@@ -45,10 +47,8 @@ public class ScoreArrayController : MonoBehaviour
         itemHandle.unsavedText = unsavedText;
 
         // Set date vars
-        itemHandle.hourInput = hourInput;
+        itemHandle.timeInput = timeInput;
         itemHandle.dateInput = dateInput;
-        itemHandle.monthInput = monthInput;
-        itemHandle.yearInput = yearInput;
 
         // Set judgement vars
         itemHandle.perfects = perfects;
