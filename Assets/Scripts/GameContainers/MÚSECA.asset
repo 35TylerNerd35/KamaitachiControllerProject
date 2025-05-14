@@ -26,3 +26,5 @@ MonoBehaviour:
   - Green
   - Yellow
   - Red
+  doesHaveWarning: 0
+  varName: musecaSingle

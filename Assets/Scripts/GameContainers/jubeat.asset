@@ -29,3 +29,5 @@ MonoBehaviour:
   - HARD BSC
   - HARD ADV
   - HARD EXT
+  doesHaveWarning: 0
+  varName: jubeatSingle

@@ -33,3 +33,5 @@ MonoBehaviour:
   - VVD
   - XCD
   - MXM
+  doesHaveWarning: 0
+  varName: sdvxSingle

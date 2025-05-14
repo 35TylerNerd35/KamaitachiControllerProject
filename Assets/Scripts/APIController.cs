@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 
 public class APIController : MonoBehaviour
 {
@@ -23,6 +25,13 @@ public class APIController : MonoBehaviour
 
     [Header("Game Fields")]
     [SerializeField] GameObject warningText;
+    [SerializeField] ChartsResponse[] charts;
+
+    [Header("Song Name")]
+    [SerializeField] TMP_InputField songNameInput;
+    [SerializeField] TMP_Text displayAutocorrectSong;
+    
+    SearchResponse searchResponse;
 
     void Start()
     {
@@ -114,5 +123,57 @@ public class APIController : MonoBehaviour
         // Set dropdown options
         difficultyDropdown.AddOptions(difficulties);
         lampDropdown.AddOptions(lamps);
+
+        // Update autocorrect to list for newly selected game
+        ReloadResponses();
+    }
+
+    public async void TrySearchGame(string searchCriteria)
+    {
+        // Send request and then reload responses
+        searchResponse = await APIBridge.instance.SendGetRequest<SearchResponse>("https://kamai.tachi.ac/api/v1/search" + "?search=" + searchCriteria);
+        ReloadResponses();
+    }
+
+    public void ReloadResponses()
+    {
+        // Null check responses
+        if (searchResponse == null)
+            return;
+
+        // Grab array of responses based on current game selection
+        var gameResponse = searchResponse.body.charts.GetType().GetField(games[currentGameSelection].varName);
+        charts = gameResponse.GetValue(searchResponse.body.charts) as ChartsResponse[];
+
+        // Declare list to perform operations on
+        List<ChartsResponse> chartList = charts.ToList();
+
+        // Remove duplicates
+        chartList = chartList.DistinctBy(o=>o.song.title).ToList();
+
+        // Sort by search score
+        chartList = chartList.OrderBy(o=>o.song.__textScore).Reverse().ToList();
+
+
+        // Grab first 10 elements if too many
+        if (chartList.Count > 10)
+        {
+            chartList.RemoveRange(10, chartList.Count - 10);    
+        }
+
+        // Convert back to array to use
+        charts = chartList.ToArray();
+
+
+        if (charts.Length <= 0)
+            return;
+
+        // Display on text
+        displayAutocorrectSong.text = charts[0].song.title;
+    }
+
+    public void AutoCorrect()
+    {
+        songNameInput.text = displayAutocorrectSong.text;
     }
 }

@@ -36,3 +36,5 @@ MonoBehaviour:
   - DX Expert
   - DX Master
   - DX Re:Master
+  doesHaveWarning: 0
+  varName: maimaidxSingle

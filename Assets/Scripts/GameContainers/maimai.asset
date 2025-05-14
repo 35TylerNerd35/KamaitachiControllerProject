@@ -30,3 +30,5 @@ MonoBehaviour:
   - Expert
   - Master
   - Re:Master
+  doesHaveWarning: 0
+  varName: maimaiSingle

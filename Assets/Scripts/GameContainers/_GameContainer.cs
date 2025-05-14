@@ -14,4 +14,8 @@ public class GameContainer : ScriptableObject
     [Space][Space][Space]
 
     public bool doesHaveWarning;
+
+    [Space][Space][Space]
+
+    public string varName;
 }

@@ -32,3 +32,5 @@ MonoBehaviour:
   - DIFFICULT
   - EXPERT
   - CHALLENGE
+  doesHaveWarning: 0
+  varName: ddrDp

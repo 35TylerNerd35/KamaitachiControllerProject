@@ -28,3 +28,5 @@ MonoBehaviour:
   - HARD
   - EXPERT
   - INFERNO
+  doesHaveWarning: 0
+  varName: waccaSingle

@@ -27,3 +27,5 @@ MonoBehaviour:
   - ADVANCED
   - EXTREME
   - MASTER
+  doesHaveWarning: 0
+  varName: gitadoraDora
