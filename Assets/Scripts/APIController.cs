@@ -128,15 +128,24 @@ public class APIController : MonoBehaviour
         ReloadResponses();
     }
 
+    int queuedSearches = 0;
     public async void TrySearchGame(string searchCriteria)
     {
         // Send request and then reload responses
+        queuedSearches++;
         searchResponse = await APIBridge.instance.SendGetRequest<SearchResponse>("https://kamai.tachi.ac/api/v1/search" + "?search=" + searchCriteria);
+
+        // Reload responses and update how many searches are queued
+        queuedSearches--;
         ReloadResponses();
     }
 
     public void ReloadResponses()
     {
+        // Don't update auto correct if there are queued searches
+        if (queuedSearches > 0)
+            return;
+
         // Null check responses
         if (searchResponse == null)
             return;
