@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,7 +68,15 @@ public class APIBridge : MonoBehaviour
             return new R();
 
         // Convert to requested response type
-        R jsonObj  = JsonConvert.DeserializeObject<R>(responseString);
-        return jsonObj;
+        try
+        {
+            R jsonObj = JsonConvert.DeserializeObject<R>(responseString);
+            return jsonObj;
+        }
+        catch(Exception e)
+        {
+            Debug.LogWarning(e.ToString());
+            return new R();
+        }
     }
 }

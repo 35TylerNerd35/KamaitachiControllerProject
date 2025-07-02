@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
 public class APIController : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class APIController : MonoBehaviour
 
     [Header("Song Name")]
     [SerializeField] TMP_InputField songNameInput;
-    [SerializeField] TMP_Text displayAutocorrectSong;
+    [SerializeField] TMP_Text[] autocorrectTextElements;
     
     SearchResponse searchResponse;
 
@@ -178,11 +179,30 @@ public class APIController : MonoBehaviour
             return;
 
         // Display on text
-        displayAutocorrectSong.text = charts[0].song.title;
+        for (int i = 0; i < autocorrectTextElements.Length; i++)
+        {
+            // Display autocorrect song
+            if (i < charts.Length)
+            {
+                // Update button
+                autocorrectTextElements[i].text = charts[i].song.title;
+                autocorrectTextElements[i].transform.parent.GetComponent<Button>().interactable = true;
+                
+                // Hide button if songName is already set
+                if (songNameInput.text != charts[i].song.title)
+                {
+                    continue;
+                }
+            }
+
+            // Hide and disable button
+            autocorrectTextElements[i].text = "";
+            autocorrectTextElements[i].transform.parent.GetComponent<Button>().interactable = false;
+        }
     }
 
-    public void AutoCorrect()
+    public void AutoCorrect(int index)
     {
-        songNameInput.text = displayAutocorrectSong.text;
+        songNameInput.text = autocorrectTextElements[index].text;
     }
 }
